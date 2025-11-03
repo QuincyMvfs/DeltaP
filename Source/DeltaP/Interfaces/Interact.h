@@ -23,7 +23,7 @@ struct FInteractionInfo
 
 
 
-UINTERFACE(BlueprintType, Blueprintable)
+UINTERFACE(BlueprintType)
 class UInteract : public UInterface
 {
 	GENERATED_BODY()
