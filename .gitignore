@@ -15,6 +15,7 @@ AutoBuildLogs/
 lfs/
 hooks/
 /Binaries/
+/Plugins/SteamCorePro/Binaries/**
 !/Plugins/SteamCorePro/Source/ThirdParty/SteamLibrary/**
 
 # Wwise Project
