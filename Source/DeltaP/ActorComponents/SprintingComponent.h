@@ -23,5 +23,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float SprintingSpeed = 1000.0f;
 
+	UFUNCTION(BlueprintCallable, Category="Sprinting")
+	void SetSprinting(bool IsRunning);
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Sprinting")
+	bool IsSprinting = false;
+
 		
 };

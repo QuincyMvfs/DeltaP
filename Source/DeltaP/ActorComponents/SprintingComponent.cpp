@@ -18,3 +18,8 @@ void USprintingComponent::BeginPlay()
 	
 }
 
+void USprintingComponent::SetSprinting(bool IsRunning)
+{
+	IsSprinting = IsRunning;
+}
+
