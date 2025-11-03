@@ -3,3 +3,19 @@
 
 #include "DeltaPPlayerController.h"
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+
+
+class UEnhancedInputLocalPlayerSubsystem;
+
+void ADeltaPPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (IsLocalController())
+	{
+		
+	}
+}
+

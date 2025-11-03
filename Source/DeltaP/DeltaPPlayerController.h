@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DeltaPCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "DeltaPPlayerController.generated.h"
 
@@ -13,5 +14,6 @@ UCLASS()
 class DELTAP_API ADeltaPPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+	virtual void BeginPlay() override;
 };
