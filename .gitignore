@@ -15,7 +15,7 @@ AutoBuildLogs/
 lfs/
 hooks/
 /Binaries/
-!/Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-SteamCorePro.dll
+!/Plugins/SteamCorePro/Binaries/Win64/*.dll
 
 # Wwise Project
 Wwise/IncrementalSoundBankData.xml
