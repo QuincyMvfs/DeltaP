@@ -15,7 +15,7 @@ AutoBuildLogs/
 lfs/
 hooks/
 /Binaries/
-!/Plugins/SteamCorePro/Binaries/Win64/*.dll
+!/Plugins/SteamCorePro/Source/ThirdParty/
 
 # Wwise Project
 Wwise/IncrementalSoundBankData.xml
