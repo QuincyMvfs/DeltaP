@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "SprintingComponent.generated.h"
 
 
@@ -16,6 +17,9 @@ public:
 	// Sets default values for this component's properties
 	USprintingComponent();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -23,11 +27,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float SprintingSpeed = 1000.0f;
 
+	UPROPERTY(Replicated)
+	float DefaultWalkSpeed;
+
+	UPROPERTY(Replicated, VisibleDefaultsOnly, BlueprintReadOnly, Category="Sprinting")
+	bool IsSprinting = false;
+	
 	UFUNCTION(BlueprintCallable, Category="Sprinting")
 	void SetSprinting(bool IsRunning);
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Sprinting")
-	bool IsSprinting = false;
+	UFUNCTION(Server, Reliable, Category="Sprinting|Server")
+	void Server_SetSprinting(bool Value);
 
-		
+	UFUNCTION(NetMulticast, Reliable, Category="Sprinting|Multi")
+	void Multi_SetSprinting(float NewSpeed);
+
+	UPROPERTY(Replicated)
+	UCharacterMovementComponent* PlayerMovementComponent;
 };
