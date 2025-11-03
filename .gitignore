@@ -74,3 +74,12 @@ SavedData.txt
 
 # Mac
 *.DS_Store
+Config/DefaultEditor.ini
+Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-OnlineSubsystemSteamCore.dll
+Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-OnlineSubsystemSteamCore.exp
+Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-SteamCorePro.dll
+Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-SteamCorePro.exp
+Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-SteamCoreShared.dll
+Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-SteamCoreShared.exp
+Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-SteamCoreSockets.dll
+Plugins/SteamCorePro/Binaries/Win64/UnrealEditor-SteamCoreSockets.exp
