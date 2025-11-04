@@ -80,6 +80,25 @@ void ADeltaPCharacter::GenerateMovementDefaults()
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 }
 
+void ADeltaPCharacter::ChangeMovementState(EMovementStates NewState)
+{
+	Server_ChangeMovementState(NewState);
+}
+
+void ADeltaPCharacter::Server_ChangeMovementState_Implementation(EMovementStates NewState)
+{
+	if (NewState == CurrentMovementState) return;
+
+	CurrentMovementState = NewState;
+	const FString EnumName = UEnum::GetValueAsString(CurrentMovementState);
+	//UE_LOG(LogTemp, Display, TEXT("New State = %s"), *EnumName);
+}
+
+void ADeltaPCharacter::Multi_ChangeMovementState_Implementation(EMovementStates NewState)
+{
+	
+}
+
 void ADeltaPCharacter::Move(const FVector2D MovementVector)
 {
 	if (Controller != nullptr)

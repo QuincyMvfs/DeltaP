@@ -49,17 +49,24 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	/** Called for looking input */
 	void Look(const FVector2D LookAxisVector);
-			
-
-protected:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	virtual void NotifyControllerChanged() override;
 	void GenerateMovementDefaults();
 
+public:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
 	EMovementStates CurrentMovementState;
+	
+	UFUNCTION(BlueprintCallable)
+	void ChangeMovementState(EMovementStates NewState);
+
+	UFUNCTION(Server, Unreliable, BlueprintCallable)
+	void Server_ChangeMovementState(EMovementStates NewState);
+	
+	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
+	void Multi_ChangeMovementState(EMovementStates NewState);
 
 
 public:

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "DeltaP/DeltaPCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CrouchingComponent.generated.h"
 
@@ -41,8 +42,23 @@ protected:
 	UFUNCTION(NetMulticast, UnReliable, Category="Crouching|Multi")
 	void Multi_SetWalkSpeed(float NewSpeed);
 
+	UFUNCTION(Category="Crouching")
+	void GetReferenceVariables();
+	
+	UFUNCTION(Server, UnReliable, Category="Crouching|Server")
+	void Server_GetReferenceVariables();
+	
+	UFUNCTION(NetMulticast, UnReliable, Category="Crouching|Multi")
+	void Multi_GetReferenceVariables();
+
+	void UpdateVariablesToCrouching();
+
 	UPROPERTY()
-	UCharacterMovementComponent* PlayerMovementComponent;
+	UCharacterMovementComponent* PlayerMovementComponentRef;
+
+	UPROPERTY()
+	ADeltaPCharacter* PlayerRef;
+	
 
 		
 };

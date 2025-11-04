@@ -17,7 +17,11 @@ UCrouchingComponent::UCrouchingComponent()
 void UCrouchingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (Cast<APawn>(GetOwner())->IsLocallyControlled())
+	{
+		Server_GetReferenceVariables();
+	}
 }
 
 void UCrouchingComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -35,24 +39,19 @@ void UCrouchingComponent::SetCrouching(bool Value)
 void UCrouchingComponent::Server_SetCrouching_Implementation(bool Value)
 {
 	IsCrouching = Value;
-
+	
 	if (Value)
 	{
-		if (PlayerMovementComponent)
+		if (PlayerMovementComponentRef)
 		{
-			PlayerMovementComponent->MaxWalkSpeed = CrouchingSpeed;
-		}
-		else
-		{
-			PlayerMovementComponent = Cast<ADeltaPCharacter>(GetOwner())->GetCharacterMovement();
-			DefaultWalkSpeed = PlayerMovementComponent->GetMaxSpeed();
-			Multi_SetWalkSpeed(CrouchingSpeed);
+			UpdateVariablesToCrouching();
 		}
 	}
 	else
 	{
-		if (PlayerMovementComponent)
+		if (PlayerRef->CurrentMovementState == EMovementStates::Crouching)
 		{
+			PlayerRef->ChangeMovementState(EMovementStates::Idle);
 			Multi_SetWalkSpeed(DefaultWalkSpeed);
 		}
 	}
@@ -60,13 +59,35 @@ void UCrouchingComponent::Server_SetCrouching_Implementation(bool Value)
 
 void UCrouchingComponent::Multi_SetWalkSpeed_Implementation(float NewSpeed)
 {
-	if (PlayerMovementComponent)
+	if (PlayerMovementComponentRef)
 	{
-		PlayerMovementComponent->MaxWalkSpeed = NewSpeed;
+		PlayerMovementComponentRef->MaxWalkSpeed = NewSpeed;
 	}
-	else
+}
+
+void UCrouchingComponent::GetReferenceVariables()
+{
+	Server_GetReferenceVariables();
+}
+
+void UCrouchingComponent::Server_GetReferenceVariables_Implementation()
+{
+	Multi_GetReferenceVariables();
+}
+
+void UCrouchingComponent::Multi_GetReferenceVariables_Implementation()
+{
+	PlayerRef = Cast<ADeltaPCharacter>(GetOwner());
+	PlayerMovementComponentRef = PlayerRef->GetCharacterMovement();
+	DefaultWalkSpeed = PlayerMovementComponentRef->GetMaxSpeed();
+}
+
+void UCrouchingComponent::UpdateVariablesToCrouching()
+{
+	if (PlayerRef->CurrentMovementState != EMovementStates::Sprinting)
 	{
-		PlayerMovementComponent = Cast<ADeltaPCharacter>(GetOwner())->GetCharacterMovement();
-		PlayerMovementComponent->MaxWalkSpeed = NewSpeed;
+		PlayerMovementComponentRef->MaxWalkSpeed = CrouchingSpeed;
+		PlayerRef->ChangeMovementState(EMovementStates::Crouching);
+		Multi_SetWalkSpeed(CrouchingSpeed);
 	}
 }

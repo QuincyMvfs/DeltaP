@@ -24,6 +24,11 @@ void USprintingComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 void USprintingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (Cast<APawn>(GetOwner())->IsLocallyControlled())
+	{
+		Server_GetReferenceVariables();
+	}
 }
 
 void USprintingComponent::SetSprinting(bool IsRunning)
@@ -37,36 +42,56 @@ void USprintingComponent::Server_SetSprinting_Implementation(bool Value)
 
 	if (Value)
 	{
-		if (PlayerMovementComponent)
+		if (PlayerMovementComponentRef)
 		{
-			PlayerMovementComponent->MaxWalkSpeed = SprintingSpeed;
-		}
-		else
-		{
-			PlayerMovementComponent = Cast<ADeltaPCharacter>(GetOwner())->GetCharacterMovement();
-			DefaultWalkSpeed = PlayerMovementComponent->GetMaxSpeed();
-			Multi_SetMaxWalkSpeed(SprintingSpeed);
+			SetSprintingVariables();
 		}
 	}
 	else
 	{
-		if (PlayerMovementComponent)
+		if (PlayerMovementComponentRef)
 		{
-			Multi_SetMaxWalkSpeed(DefaultWalkSpeed);
+			if (PlayerRef->CurrentMovementState == EMovementStates::Sprinting)
+			{
+				PlayerRef->ChangeMovementState(EMovementStates::Idle);
+				Multi_SetMaxWalkSpeed(DefaultWalkSpeed);
+			}
 		}
 	}
 }
 
 void USprintingComponent::Multi_SetMaxWalkSpeed_Implementation(float NewSpeed)
 {
-	if (PlayerMovementComponent)
+	if (PlayerMovementComponentRef)
 	{
-		PlayerMovementComponent->MaxWalkSpeed = NewSpeed;
+		PlayerMovementComponentRef->MaxWalkSpeed = NewSpeed;
 	}
-	else
+}
+
+void USprintingComponent::GetReferenceVariables()
+{
+	Server_GetReferenceVariables();
+}
+
+void USprintingComponent::Server_GetReferenceVariables_Implementation()
+{
+	Multi_GetReferenceVariables();
+}
+
+void USprintingComponent::Multi_GetReferenceVariables_Implementation()
+{
+	PlayerRef = Cast<ADeltaPCharacter>(GetOwner());
+	PlayerMovementComponentRef = PlayerRef->GetCharacterMovement();
+	DefaultWalkSpeed = PlayerMovementComponentRef->GetMaxSpeed();
+}
+
+void USprintingComponent::SetSprintingVariables()
+{
+	if (PlayerRef->CurrentMovementState != EMovementStates::Crouching)
 	{
-		PlayerMovementComponent = Cast<ADeltaPCharacter>(GetOwner())->GetCharacterMovement();
-		PlayerMovementComponent->MaxWalkSpeed = NewSpeed;
+		PlayerMovementComponentRef->MaxWalkSpeed = SprintingSpeed;
+		PlayerRef->ChangeMovementState(EMovementStates::Sprinting);
+		Multi_SetMaxWalkSpeed(SprintingSpeed);
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "DeltaP/DeltaPCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SprintingComponent.generated.h"
 
@@ -42,6 +43,21 @@ protected:
 	UFUNCTION(NetMulticast, UnReliable, Category="Sprinting|Multi")
 	void Multi_SetMaxWalkSpeed(float NewSpeed);
 
+	// Get Referencing Variables
+	UFUNCTION(Category="Sprinting")
+	void GetReferenceVariables();
+	
+	UFUNCTION(Server, UnReliable, Category="Sprinting|Server")
+	void Server_GetReferenceVariables();
+	
+	UFUNCTION(NetMulticast, UnReliable, Category="Sprinting|Multi")
+	void Multi_GetReferenceVariables();
+	
+	void SetSprintingVariables();
+	
 	UPROPERTY()
-	UCharacterMovementComponent* PlayerMovementComponent;
+	UCharacterMovementComponent* PlayerMovementComponentRef;
+
+	UPROPERTY()
+	ADeltaPCharacter* PlayerRef;
 };
