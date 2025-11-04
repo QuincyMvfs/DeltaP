@@ -32,7 +32,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact|Trace Settings", meta=(EditCondition="DrawDebugType == EDrawDebugTrace::ForDuration") )
 	float DebugTraceDuration = 0.0f;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "Interact")
 	FTimerHandle HoldTimer;
 
 	UPROPERTY()
@@ -67,6 +67,9 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
 	void OnSuccessfulHit(const FInteractionInfo& Info);
 
+	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
+	void OnCancelInteract();
+	
 	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
 	void OnInteractComplete();
 };
