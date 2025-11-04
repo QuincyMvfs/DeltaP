@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enums/EMovementStates.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "DeltaPCharacter.generated.h"
 
+class UCrouchingComponent;
 class USprintingComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -30,6 +32,9 @@ class ADeltaPCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor Components|Movement", meta = (AllowPrivateAccess = "true"))
 	USprintingComponent* SprintingComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor Components|Movement", meta = (AllowPrivateAccess = "true"))
+	UCrouchingComponent* CrouchingComponent;
+
 
 public:
 	ADeltaPCharacter();
@@ -48,8 +53,13 @@ protected:
 
 protected:
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	virtual void NotifyControllerChanged() override;
 	void GenerateMovementDefaults();
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
+	EMovementStates CurrentMovementState;
 
 
 public:

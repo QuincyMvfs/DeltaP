@@ -9,7 +9,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "ActorComponents/CrouchingComponent.h"
 #include "ActorComponents/SprintingComponent.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -21,6 +23,7 @@ ADeltaPCharacter::ADeltaPCharacter()
 	GenerateMovementDefaults();
 
 	SprintingComponent = CreateDefaultSubobject<USprintingComponent>(TEXT("SprintingComponent"));
+	CrouchingComponent = CreateDefaultSubobject<UCrouchingComponent>(TEXT("CrouchingComponent"));
 	
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -29,6 +32,14 @@ ADeltaPCharacter::ADeltaPCharacter()
 
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+}
+
+void ADeltaPCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ADeltaPCharacter, CurrentMovementState);
+
 }
 
 void ADeltaPCharacter::NotifyControllerChanged()
