@@ -83,15 +83,23 @@ void UInteractComponent::TryInteract()
 		}
 		else
 		{
-			InteractComplete(HitActor);
+			OnInteractComplete();
+			Server_InteractComplete(HitActor);
 		}
 	}
 }
 
-void UInteractComponent::InteractComplete(AActor* HitActor)
+void UInteractComponent::BeginInteract()
+{
+}
+
+void UInteractComponent::CancelInteract()
+{
+}
+
+void UInteractComponent::Server_InteractComplete_Implementation(AActor* HitActor)
 {
 	IInteract::Execute_Interact(HitActor, OwningActor);
-	OnInteractComplete();
 }
 
 FHitResult UInteractComponent::TryExecuteTrace()
