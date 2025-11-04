@@ -28,6 +28,12 @@ void UInteractComponent::BeginPlay()
 	}
 }
 
+void UInteractComponent::TryUpdatingReferences()
+{
+	OwningActor = GetOwner();
+	CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+}
+
 void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -38,24 +44,8 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 	
 	if (IsActive() && OwningActor->HasLocalNetOwner()) return;
-
-	FVector StartLocation = CameraManager->GetCameraLocation();
-	FVector EndLocation = (CameraManager->GetActorForwardVector() * InteractDistance) + StartLocation;
-
-	FHitResult Hit;
-	UKismetSystemLibrary::CapsuleTraceSingle(this,
-		StartLocation,
-		EndLocation,
-		CapsuleRadius,
-		0.0f,
-		UEngineTypes::ConvertToTraceType(ECC_Visibility),
-		false,
-		{OwningActor},
-		DrawDebugType,
-		Hit, true,
-		FLinearColor::Red,
-		FLinearColor::Green,
-		DebugTraceDuration);
+	
+	FHitResult Hit = TryExecuteTrace();
 	
 	if (AActor* HitActor = Hit.GetActor())
 	{
@@ -70,13 +60,39 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 }
 
-void UInteractComponent::TryUpdatingReferences()
-{
-	OwningActor = GetOwner();
-	CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
-}
 
 void UInteractComponent::TryInteract()
+{
+	FHitResult Hit= TryExecuteTrace();
+
+	AActor* HitActor = Hit.GetActor();
+	if (!IsValid(HitActor)) return;
+
+	if (!HitActor->GetClass()->ImplementsInterface(UInteract::StaticClass())) return;
+
+	bool CanInteract = IInteract::Execute_CanInteract(HitActor);
+	if (CanInteract)
+	{
+		FInteractionInfo InteractionInfo = IInteract::Execute_GetInteractInfo(HitActor);
+		if (InteractionInfo.Hold)
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,TEXT("HOLD TO BE WORKED ON"));
+			}
+		}
+		else
+		{
+			IInteract::Execute_Interact(HitActor, OwningActor);
+		}
+	}
+}
+
+void UInteractComponent::InteractComplete()
+{
+}
+
+FHitResult UInteractComponent::TryExecuteTrace()
 {
 	if (!IsValid(OwningActor) && !IsValid(CameraManager))
 	{
@@ -100,33 +116,6 @@ void UInteractComponent::TryInteract()
 		FLinearColor::Red,
 		FLinearColor::Green,
 		DebugTraceDuration);
-	
-	if (AActor* HitActor = Hit.GetActor())
-	{
-		if (HitActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
-		{
-			bool CanInteract = IInteract::Execute_CanInteract(HitActor);
-			if (CanInteract)
-			{
-				FInteractionInfo InteractionInfo = IInteract::Execute_GetInteractInfo(HitActor);
-				if (InteractionInfo.Hold)
-				{
-					if (GEngine)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,TEXT("HOLD TO BE WORKED ON"));
-					}
-				}
-				else
-				{
-					IInteract::Execute_Interact(HitActor, OwningActor);
-				}
-			}
-		}
-	}
+
+	return Hit;
 }
-
-void UInteractComponent::InteractComplete()
-{
-}
-
-

@@ -27,6 +27,9 @@ protected:
 	UFUNCTION()
 	void TryUpdatingReferences();
 
+	UFUNCTION()
+	FHitResult TryExecuteTrace();
+
 	UFUNCTION(BlueprintCallable, Category = "Interact")
 	void TryInteract();
 
