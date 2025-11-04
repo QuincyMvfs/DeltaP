@@ -21,8 +21,7 @@ struct FInteractionInfo
 	FText InteractMessage;
 };
 
-
-
+class UAnimMontage;
 UINTERFACE(BlueprintType)
 class UInteract : public UInterface
 {
@@ -37,7 +36,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interact")
 	void Interact(AActor* InstigatorActor);
 
-	UFUNCTION(BLueprintCallable, BlueprintNativeEvent, Category = "Interact")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interact")
 	bool CanInteract() const;
 
 	UFUNCTION(BLueprintCallable, BlueprintNativeEvent, Category = "Interact")
