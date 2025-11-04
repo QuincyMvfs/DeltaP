@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "CrouchingComponent.generated.h"
 
 
@@ -19,6 +20,29 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float CrouchingSpeed = 300.0f;
+
+	UPROPERTY()
+	float DefaultWalkSpeed;
+
+	UPROPERTY(Replicated, VisibleDefaultsOnly, BlueprintReadOnly, Category="Crouching")
+	bool IsCrouching = false;
+	
+	UFUNCTION(BlueprintCallable, Category="Crouching")
+	void SetCrouching(bool Value);
+
+	UFUNCTION(Server, UnReliable, Category="Crouching|Server")
+	void Server_SetCrouching(bool Value);
+
+	UFUNCTION(NetMulticast, UnReliable, Category="Crouching|Multi")
+	void Multi_SetWalkSpeed(float NewSpeed);
+
+	UPROPERTY()
+	UCharacterMovementComponent* PlayerMovementComponent;
 
 		
 };
