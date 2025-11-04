@@ -34,6 +34,9 @@ protected:
 
 	UPROPERTY()
 	FTimerHandle HoldTimer;
+
+	UPROPERTY()
+	AActor* TargetActor;
 	
 public:	
 	UInteractComponent();
@@ -56,9 +59,9 @@ protected:
 	void Server_InteractComplete(AActor* HitActor);
 
 	UFUNCTION()
-	void BeginInteract();
+	void OnHoldFinished();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Interact")
 	void CancelInteract();
 	
 	UFUNCTION(BlueprintNativeEvent, Category = "Interact")

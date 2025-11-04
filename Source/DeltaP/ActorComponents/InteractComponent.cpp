@@ -58,6 +58,10 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 			}
 		}
 	}
+	else
+	{
+		CancelInteract();
+	}
 }
 
 
@@ -76,10 +80,11 @@ void UInteractComponent::TryInteract()
 		FInteractionInfo InteractionInfo = IInteract::Execute_GetInteractInfo(HitActor);
 		if (InteractionInfo.Hold)
 		{
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,TEXT("HOLD TO BE WORKED ON"));
-			}
+			UWorld* World = GetWorld();
+			if (!IsValid(World)) return;
+	
+			TargetActor = HitActor;
+			World->GetTimerManager().SetTimer(HoldTimer, this, &ThisClass::OnHoldFinished, InteractionInfo.HoldTime, false);
 		}
 		else
 		{
@@ -89,12 +94,22 @@ void UInteractComponent::TryInteract()
 	}
 }
 
-void UInteractComponent::BeginInteract()
+void UInteractComponent::OnHoldFinished()
 {
+	if (TargetActor)
+	{
+		OnInteractComplete();
+		Server_InteractComplete(TargetActor);
+	}
 }
 
 void UInteractComponent::CancelInteract()
 {
+	UWorld* World = GetWorld();
+	if (!IsValid(World)) return;
+
+	World->GetTimerManager().ClearTimer(HoldTimer);
+	TargetActor = nullptr;
 }
 
 void UInteractComponent::Server_InteractComplete_Implementation(AActor* HitActor)
