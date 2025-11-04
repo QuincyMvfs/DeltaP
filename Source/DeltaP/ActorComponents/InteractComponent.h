@@ -7,7 +7,7 @@
 #include "InteractComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent))
 class DELTAP_API UInteractComponent : public UActorComponent
 {
 	GENERATED_BODY()

@@ -27,7 +27,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float SprintingSpeed = 1000.0f;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float DefaultWalkSpeed;
 
 	UPROPERTY(Replicated, VisibleDefaultsOnly, BlueprintReadOnly, Category="Sprinting")
@@ -36,12 +36,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Sprinting")
 	void SetSprinting(bool IsRunning);
 
-	UFUNCTION(Server, Reliable, Category="Sprinting|Server")
+	UFUNCTION(Server, UnReliable, Category="Sprinting|Server")
 	void Server_SetSprinting(bool Value);
 
-	UFUNCTION(NetMulticast, Reliable, Category="Sprinting|Multi")
-	void Multi_SetSprinting(float NewSpeed);
+	UFUNCTION(NetMulticast, UnReliable, Category="Sprinting|Multi")
+	void Multi_SetMaxWalkSpeed(float NewSpeed);
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	UCharacterMovementComponent* PlayerMovementComponent;
 };

@@ -15,10 +15,8 @@ USprintingComponent::USprintingComponent()
 void USprintingComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	//
+	
 	DOREPLIFETIME(USprintingComponent, IsSprinting);
-	// DOREPLIFETIME(USprintingComponent, PlayerMovementComponent);
-	// DOREPLIFETIME(USprintingComponent, DefaultWalkSpeed);
 }
 
 
@@ -47,19 +45,19 @@ void USprintingComponent::Server_SetSprinting_Implementation(bool Value)
 		{
 			PlayerMovementComponent = Cast<ADeltaPCharacter>(GetOwner())->GetCharacterMovement();
 			DefaultWalkSpeed = PlayerMovementComponent->GetMaxSpeed();
-			Multi_SetSprinting(SprintingSpeed);
+			Multi_SetMaxWalkSpeed(SprintingSpeed);
 		}
 	}
 	else
 	{
 		if (PlayerMovementComponent)
 		{
-			Multi_SetSprinting(DefaultWalkSpeed);
+			Multi_SetMaxWalkSpeed(DefaultWalkSpeed);
 		}
 	}
 }
 
-void USprintingComponent::Multi_SetSprinting_Implementation(float NewSpeed)
+void USprintingComponent::Multi_SetMaxWalkSpeed_Implementation(float NewSpeed)
 {
 	if (PlayerMovementComponent)
 	{
