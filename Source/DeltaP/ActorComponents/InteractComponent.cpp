@@ -64,7 +64,6 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 }
 
-
 void UInteractComponent::TryInteract()
 {
 	FHitResult Hit= TryExecuteTrace();
