@@ -104,6 +104,7 @@ void UInteractComponent::OnHoldFinished()
 
 void UInteractComponent::CancelInteract()
 {
+	OnCancelInteract();
 	UWorld* World = GetWorld();
 	if (!IsValid(World)) return;
 
@@ -149,5 +150,9 @@ void UInteractComponent::OnInteractComplete_Implementation()
 }
 
 void UInteractComponent::OnSuccessfulHit_Implementation(const FInteractionInfo& Info)
+{
+}
+
+void UInteractComponent::OnCancelInteract_Implementation()
 {
 }
