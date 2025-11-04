@@ -76,4 +76,57 @@ void UInteractComponent::TryUpdatingReferences()
 	CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 }
 
+void UInteractComponent::TryInteract()
+{
+	if (!IsValid(OwningActor) && !IsValid(CameraManager))
+	{
+		TryUpdatingReferences();
+	}
+	
+	FVector StartLocation = CameraManager->GetCameraLocation();
+	FVector EndLocation = (CameraManager->GetActorForwardVector() * InteractDistance) + StartLocation;
+	
+	FHitResult Hit;
+	UKismetSystemLibrary::CapsuleTraceSingle(this,
+		StartLocation,
+		EndLocation,
+		CapsuleRadius,
+		0.0f,
+		UEngineTypes::ConvertToTraceType(ECC_Visibility),
+		false,
+		{OwningActor},
+		DrawDebugType,
+		Hit, true,
+		FLinearColor::Red,
+		FLinearColor::Green,
+		DebugTraceDuration);
+	
+	if (AActor* HitActor = Hit.GetActor())
+	{
+		if (HitActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
+		{
+			bool CanInteract = IInteract::Execute_CanInteract(HitActor);
+			if (CanInteract)
+			{
+				FInteractionInfo InteractionInfo = IInteract::Execute_GetInteractInfo(HitActor);
+				if (InteractionInfo.Hold)
+				{
+					if (GEngine)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,TEXT("HOLD TO BE WORKED ON"));
+					}
+				}
+				else
+				{
+					IInteract::Execute_Interact(HitActor, OwningActor);
+				}
+			}
+		}
+	}
+}
+
+void UInteractComponent::InteractComplete()
+{
+}
+
 

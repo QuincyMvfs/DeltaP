@@ -26,6 +26,12 @@ protected:
 
 	UFUNCTION()
 	void TryUpdatingReferences();
+
+	UFUNCTION(BlueprintCallable, Category = "Interact")
+	void TryInteract();
+
+	UFUNCTION(BlueprintCallable, Category = "Interact")
+	void InteractComplete();
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Interact")
 	AActor* OwningActor;
