@@ -8,14 +8,30 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "InteractComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSuccessfulHit, FInteractionInfo, InteractionInfo);
-
-
 UCLASS(ClassGroup=(Custom), Blueprintable, meta=(BlueprintSpawnableComponent))
 class DELTAP_API UInteractComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Interact")
+	AActor* OwningActor;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Interact")
+	APlayerCameraManager* CameraManager;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact")
+	float InteractDistance = 300.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact|Trace Settings")
+	float CapsuleRadius = 15.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact|Trace Settings")
+	TEnumAsByte<EDrawDebugTrace::Type> DrawDebugType = EDrawDebugTrace::None;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact|Trace Settings", meta=(EditCondition="DrawDebugType == EDrawDebugTrace::ForDuration") )
+	float DebugTraceDuration = 0.0f;
+	
 public:	
 	UInteractComponent();
 
@@ -34,26 +50,11 @@ protected:
 	void TryInteract();
 
 	UFUNCTION(BlueprintCallable, Category = "Interact")
-	void InteractComplete();
+	void InteractComplete(AActor* HitActor);
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Interact")
-	AActor* OwningActor;
+	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
+	void OnSuccessfulHit(const FInteractionInfo& Info);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Interact")
-	APlayerCameraManager* CameraManager;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact")
-	float InteractDistance = 300.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact|Trace Settings")
-	float CapsuleRadius = 15.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact|Trace Settings")
-	TEnumAsByte<EDrawDebugTrace::Type> DrawDebugType = EDrawDebugTrace::None;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interact|Trace Settings", meta=(EditCondition="DrawDebugType == EDrawDebugTrace::ForDuration") )
-	float DebugTraceDuration = 0.0f;
-
-	UPROPERTY(BlueprintAssignable, Category = "Interact")
-	FOnSuccessfulHit OnSuccessfulHit;
+	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
+	void OnInteractComplete();
 };

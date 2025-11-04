@@ -54,7 +54,7 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 			bool CanInteract = IInteract::Execute_CanInteract(HitActor);
 			if (CanInteract)
 			{
-				OnSuccessfulHit.Broadcast(IInteract::Execute_GetInteractInfo(HitActor));
+				OnSuccessfulHit(IInteract::Execute_GetInteractInfo(HitActor));
 			}
 		}
 	}
@@ -83,13 +83,15 @@ void UInteractComponent::TryInteract()
 		}
 		else
 		{
-			IInteract::Execute_Interact(HitActor, OwningActor);
+			InteractComplete(HitActor);
 		}
 	}
 }
 
-void UInteractComponent::InteractComplete()
+void UInteractComponent::InteractComplete(AActor* HitActor)
 {
+	IInteract::Execute_Interact(HitActor, OwningActor);
+	OnInteractComplete();
 }
 
 FHitResult UInteractComponent::TryExecuteTrace()
@@ -118,4 +120,12 @@ FHitResult UInteractComponent::TryExecuteTrace()
 		DebugTraceDuration);
 
 	return Hit;
+}
+
+void UInteractComponent::OnInteractComplete_Implementation()
+{
+}
+
+void UInteractComponent::OnSuccessfulHit_Implementation(const FInteractionInfo& Info)
+{
 }
