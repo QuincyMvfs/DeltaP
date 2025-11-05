@@ -33,6 +33,9 @@ protected:
 	float DebugTraceDuration = 0.0f;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Interact")
+	uint8 IsInteracting : 1 = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Interact")
 	FTimerHandle HoldTimer;
 
 	UPROPERTY()
@@ -56,7 +59,7 @@ protected:
 	void TryUpdatingReferences();
 
 	UFUNCTION()
-	FHitResult TryExecuteTrace();
+	FHitResult ExecuteTrace();
 
 	UFUNCTION(BlueprintCallable, Category = "Interact")
 	void TryInteract();
@@ -72,6 +75,9 @@ protected:
 
 	UFUNCTION()
 	void TryUpdateHoldValue();
+
+	UFUNCTION()
+	void TryExecutingSuccessfulHit();
 	
 	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
 	void OnSuccessfulHit(const FInteractionInfo& Info);
