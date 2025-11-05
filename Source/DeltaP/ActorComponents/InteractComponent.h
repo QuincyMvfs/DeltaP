@@ -36,7 +36,13 @@ protected:
 	FTimerHandle HoldTimer;
 
 	UPROPERTY()
+	FTimerHandle UIHoldTimer;
+
+	UPROPERTY()
 	AActor* TargetActor;
+
+	UPROPERTY()
+	float TargetActorHoldTime;
 	
 public:	
 	UInteractComponent();
@@ -63,12 +69,18 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Interact")
 	void CancelInteract();
+
+	UFUNCTION()
+	void TryUpdateHoldValue();
 	
 	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
 	void OnSuccessfulHit(const FInteractionInfo& Info);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
 	void OnCancelInteract();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
+	void OnHoldValueUpdated(const float Value);
 	
 	UFUNCTION(BlueprintNativeEvent, Category = "Interact")
 	void OnInteractComplete();

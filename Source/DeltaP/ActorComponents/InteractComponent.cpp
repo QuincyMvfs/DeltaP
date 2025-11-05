@@ -81,7 +81,9 @@ void UInteractComponent::TryInteract()
 			if (!IsValid(World)) return;
 	
 			TargetActor = HitActor;
+			TargetActorHoldTime = InteractionInfo.HoldTime;
 			World->GetTimerManager().SetTimer(HoldTimer, this, &ThisClass::OnHoldFinished, InteractionInfo.HoldTime, false);
+			World->GetTimerManager().SetTimer(UIHoldTimer, this, &ThisClass::TryUpdateHoldValue, 0.01f, true);
 		}
 		else
 		{
@@ -107,7 +109,16 @@ void UInteractComponent::CancelInteract()
 	if (!IsValid(World)) return;
 
 	World->GetTimerManager().ClearTimer(HoldTimer);
+	World->GetTimerManager().ClearTimer(UIHoldTimer);
 	TargetActor = nullptr;
+	TargetActorHoldTime = 0.f;
+
+	OnHoldValueUpdated(TargetActorHoldTime);
+}
+
+void UInteractComponent::TryUpdateHoldValue()
+{
+	OnHoldValueUpdated(TargetActorHoldTime);
 }
 
 void UInteractComponent::Server_InteractComplete_Implementation(AActor* HitActor)
@@ -152,5 +163,9 @@ void UInteractComponent::OnSuccessfulHit_Implementation(const FInteractionInfo& 
 }
 
 void UInteractComponent::OnCancelInteract_Implementation()
+{
+}
+
+void UInteractComponent::OnHoldValueUpdated_Implementation(const float Value)
 {
 }
