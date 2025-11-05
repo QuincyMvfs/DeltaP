@@ -42,8 +42,15 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 	
 	if (!IsActive() && !OwningActor->HasLocalNetOwner()) return;
-	
-	FHitResult Hit = TryExecuteTrace();
+
+	if (IsInteracting) return;
+
+	TryExecutingSuccessfulHit();
+}
+
+void UInteractComponent::TryExecutingSuccessfulHit()
+{
+	FHitResult Hit = ExecuteTrace();
 	
 	if (AActor* HitActor = Hit.GetActor())
 	{
@@ -62,9 +69,10 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	}
 }
 
+
 void UInteractComponent::TryInteract()
 {
-	FHitResult Hit= TryExecuteTrace();
+	FHitResult Hit= ExecuteTrace();
 
 	AActor* HitActor = Hit.GetActor();
 	if (!IsValid(HitActor)) return;
@@ -79,7 +87,9 @@ void UInteractComponent::TryInteract()
 		{
 			UWorld* World = GetWorld();
 			if (!IsValid(World)) return;
-	
+
+			IsInteracting = true;
+			
 			TargetActor = HitActor;
 			TargetActorHoldTime = InteractionInfo.HoldTime;
 			World->GetTimerManager().SetTimer(HoldTimer, this, &ThisClass::OnHoldFinished, InteractionInfo.HoldTime, false);
@@ -99,15 +109,19 @@ void UInteractComponent::OnHoldFinished()
 	{
 		OnInteractComplete();
 		Server_InteractComplete(TargetActor);
+		CancelInteract();
 	}
 }
 
 void UInteractComponent::CancelInteract()
 {
-	OnCancelInteract();
 	UWorld* World = GetWorld();
 	if (!IsValid(World)) return;
+
+	if (!HoldTimer.IsValid() && !World->GetTimerManager().IsTimerActive(HoldTimer)) return;
+	OnCancelInteract();
 	
+	IsInteracting = false;
 	World->GetTimerManager().ClearTimer(HoldTimer);
 	World->GetTimerManager().ClearTimer(UIHoldTimer);
 	TargetActor = nullptr;
@@ -123,10 +137,13 @@ void UInteractComponent::TryUpdateHoldValue()
 
 void UInteractComponent::Server_InteractComplete_Implementation(AActor* HitActor)
 {
-	IInteract::Execute_Interact(HitActor, OwningActor);
+	if (IsValid(HitActor) && HitActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
+	{
+		IInteract::Execute_Interact(HitActor, OwningActor);
+	}
 }
 
-FHitResult UInteractComponent::TryExecuteTrace()
+FHitResult UInteractComponent::ExecuteTrace()
 {
 	if (!IsValid(OwningActor) && !IsValid(CameraManager))
 	{
