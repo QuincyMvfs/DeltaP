@@ -94,11 +94,6 @@ void ADeltaPCharacter::Server_ChangeMovementState_Implementation(EMovementStates
 	//UE_LOG(LogTemp, Display, TEXT("New State = %s"), *EnumName);
 }
 
-void ADeltaPCharacter::Multi_ChangeMovementState_Implementation(EMovementStates NewState)
-{
-	
-}
-
 void ADeltaPCharacter::Move(const FVector2D MovementVector)
 {
 	if (Controller != nullptr)

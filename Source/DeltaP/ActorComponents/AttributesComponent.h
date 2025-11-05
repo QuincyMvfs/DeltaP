@@ -13,10 +13,9 @@ class DELTAP_API UAttributesComponent : public UActorComponent
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Attributes")
+	//UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Attributes")
 	
 
-	
 public:	
 	UAttributesComponent();
 

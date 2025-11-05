@@ -64,9 +64,6 @@ public:
 
 	UFUNCTION(Server, Unreliable, BlueprintCallable)
 	void Server_ChangeMovementState(EMovementStates NewState);
-	
-	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
-	void Multi_ChangeMovementState(EMovementStates NewState);
 
 
 public:
