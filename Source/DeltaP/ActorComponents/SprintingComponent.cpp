@@ -141,7 +141,6 @@ void USprintingComponent::SetFOV(const float NewFOV)
 			GetWorld()->GetTimerManager().ClearTimer(FOVTimer);
 			FOVTimer.Invalidate();
 		}
-
 	}
 }
 

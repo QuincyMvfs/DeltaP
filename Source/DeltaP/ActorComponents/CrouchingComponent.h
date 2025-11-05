@@ -19,20 +19,22 @@ public:
 	UCrouchingComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+
+	// CROUCHING VARIABLES
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Crouching")
 	float CrouchingSpeed = 300.0f;
 
 	UPROPERTY()
 	float DefaultWalkSpeed;
-
+	
 	UPROPERTY(Replicated, VisibleDefaultsOnly, BlueprintReadOnly, Category="Crouching")
 	bool IsCrouching = false;
+	//
 	
+	// Sets if the player is Crouching
 	UFUNCTION(BlueprintCallable, Category="Crouching")
 	void SetCrouching(bool Value);
 
@@ -40,8 +42,10 @@ protected:
 	void Server_SetCrouching(bool Value);
 
 	UFUNCTION(NetMulticast, UnReliable, Category="Crouching|Multi")
-	void Multi_SetWalkSpeed(float NewSpeed);
-
+	void Multi_SetWalkSpeed(const float NewSpeed, const float NewCameraPosition);
+	//
+	
+	// Gets and Sets the Referenced Variables
 	UFUNCTION(Category="Crouching")
 	void GetReferenceVariables();
 	
@@ -52,7 +56,27 @@ protected:
 	void Multi_GetReferenceVariables();
 
 	void UpdateVariablesToCrouching();
+	//
+	
+	// CROUCHING CAMERA VARIABLES
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Crouching|Camera")
+	float CrouchCameraZPos = 50.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Crouching|Camera")
+	float CrouchingCameraSpeed = 50.0f;
+	
+	UPROPERTY()
+	float DefaultCameraZPos;
+
+	UPROPERTY()
+	FTimerHandle CrouchingTimer;
+	
+	void SetCrouchingCameraTimer(const float TargetPosition);
+	
+	void SetCameraPosition(const float TargetPosition);
+	//
+
+	// REFERENCED VARIABLES
 	UPROPERTY()
 	UCharacterMovementComponent* PlayerMovementComponentRef;
 
