@@ -107,7 +107,7 @@ void UInteractComponent::CancelInteract()
 	OnCancelInteract();
 	UWorld* World = GetWorld();
 	if (!IsValid(World)) return;
-
+	
 	World->GetTimerManager().ClearTimer(HoldTimer);
 	World->GetTimerManager().ClearTimer(UIHoldTimer);
 	TargetActor = nullptr;
