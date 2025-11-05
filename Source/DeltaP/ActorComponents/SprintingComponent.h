@@ -31,6 +31,9 @@ protected:
 	UPROPERTY()
 	float DefaultWalkSpeed;
 
+	UPROPERTY()
+	float DefaultCameraFOV;
+
 	UPROPERTY(Replicated, VisibleDefaultsOnly, BlueprintReadOnly, Category="Sprinting")
 	bool IsSprinting = false;
 	
@@ -41,7 +44,7 @@ protected:
 	void Server_SetSprinting(bool Value);
 
 	UFUNCTION(NetMulticast, UnReliable, Category="Sprinting|Multi")
-	void Multi_SetMaxWalkSpeed(float NewSpeed);
+	void Multi_SetMaxWalkSpeed(float NewSpeed, float NewFOV);
 
 	// Get Referencing Variables
 	UFUNCTION(Category="Sprinting")
@@ -54,10 +57,27 @@ protected:
 	void Multi_GetReferenceVariables();
 	
 	void SetSprintingVariables();
+
+	// FOV Adjusting
+	UPROPERTY()
+	FTimerHandle FOVTimer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Sprinting|FOV")
+	float SprintingFOV = 110.0f;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Sprinting|FOV")
+	float FOVChangeMultiplier = 50.0f;
+
+	void SetFOVTimer(const float NewFOV);
+	
+	void SetFOV(const float NewFOV);
+	//
+
+	// Referenced Variables
 	UPROPERTY()
 	UCharacterMovementComponent* PlayerMovementComponentRef;
 
 	UPROPERTY()
 	ADeltaPCharacter* PlayerRef;
+	
 };
