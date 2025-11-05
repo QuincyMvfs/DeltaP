@@ -10,8 +10,6 @@ UInteractComponent::UInteractComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	PrimaryComponentTick.TickInterval = 0.1f;
-
-	SetIsReplicated(true);
 }
 
 void UInteractComponent::BeginPlay()
@@ -43,7 +41,7 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 		TryUpdatingReferences();
 	}
 	
-	if (IsActive() && OwningActor->HasLocalNetOwner()) return;
+	if (!IsActive() && !OwningActor->HasLocalNetOwner()) return;
 	
 	FHitResult Hit = TryExecuteTrace();
 	
