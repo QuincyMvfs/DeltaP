@@ -43,18 +43,17 @@ void UInteractComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	
 	if (!IsActive() && !OwningActor->HasLocalNetOwner()) return;
 
-	if (IsInteracting) return;
-
 	TryExecutingSuccessfulHit();
 }
 
 void UInteractComponent::TryExecutingSuccessfulHit()
 {
 	FHitResult Hit = ExecuteTrace();
-	
-	if (AActor* HitActor = Hit.GetActor())
+
+	AActor* HitActor = Hit.GetActor();
+	if (IsValid(HitActor))
 	{
-		if (HitActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
+		if (!IsInteracting && HitActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 		{
 			bool CanInteract = IInteract::Execute_CanInteract(HitActor);
 			if (CanInteract)
@@ -139,7 +138,10 @@ void UInteractComponent::Server_InteractComplete_Implementation(AActor* HitActor
 {
 	if (IsValid(HitActor) && HitActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 	{
-		IInteract::Execute_Interact(HitActor, OwningActor);
+		if (FVector::Dist(GetOwner()->GetActorLocation(), HitActor->GetActorLocation()) <= InteractDistance)
+		{
+			IInteract::Execute_Interact(HitActor, OwningActor);
+		}
 	}
 }
 
