@@ -117,8 +117,8 @@ void UInteractComponent::CancelInteract()
 	UWorld* World = GetWorld();
 	if (!IsValid(World)) return;
 
-	if (!HoldTimer.IsValid() && !World->GetTimerManager().IsTimerActive(HoldTimer)) return;
 	OnCancelInteract();
+	if (!HoldTimer.IsValid() && !World->GetTimerManager().IsTimerActive(HoldTimer)) return;
 	
 	IsInteracting = false;
 	World->GetTimerManager().ClearTimer(HoldTimer);
