@@ -23,8 +23,11 @@ ADeltaPCharacter::ADeltaPCharacter()
 	GenerateMovementDefaults();
 
 	SprintingComponent = CreateDefaultSubobject<USprintingComponent>(TEXT("SprintingComponent"));
+	SprintingComponent->SetIsReplicated(true);
 	CrouchingComponent = CreateDefaultSubobject<UCrouchingComponent>(TEXT("CrouchingComponent"));
+	SprintingComponent->SetIsReplicated(true);
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	SprintingComponent->SetIsReplicated(true);
 	
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
