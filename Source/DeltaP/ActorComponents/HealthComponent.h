@@ -47,8 +47,17 @@ public:
 	UFUNCTION(Server, Unreliable, Category = "Health|Damage|Server")
 	void Server_TakeDamage(const float Damage, const AActor* Instigator);
 
-	UFUNCTION(NetMulticast, Unreliable, Category = "Health|Damage|Server")
+	UFUNCTION(NetMulticast, Unreliable, Category = "Health|Damage|Multi")
 	void Multi_TakeDamage(const float Damage, const AActor* Instigator);
+
+	UFUNCTION(BlueprintCallable, Category = "Health|Heal")
+	void HealDamage(const float HealAmount, const AActor* Instigator);
+
+	UFUNCTION(Server, Unreliable, Category = "Health|Heal|Server")
+	void Server_HealDamage(const float HealAmount, const AActor* Instigator);
+
+	UFUNCTION(NetMulticast, Unreliable, Category = "HHealth|Heal|Multi")
+	void Multi_HealDamage(const float HealAmount, const AActor* Instigator);
 	
 		
 };

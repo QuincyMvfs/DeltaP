@@ -46,3 +46,23 @@ void UHealthComponent::Multi_TakeDamage_Implementation(const float Damage, const
 	OnDamagedEvent.Broadcast(Damage, Instigator);
 }
 
+void UHealthComponent::HealDamage(const float HealAmount, const AActor* Instigator)
+{
+	Server_HealDamage(HealAmount, Instigator);
+}
+
+
+void UHealthComponent::Server_HealDamage_Implementation(const float HealAmount, const AActor* Instigator)
+{
+	if (HealAmount <= 0) return;
+
+	float NewHealth = CurrentHealth + HealAmount;
+	CurrentHealth = FMath::Clamp(NewHealth, 0, MaxHealth);
+	
+	Multi_HealDamage(HealAmount, Instigator);
+}
+
+void UHealthComponent::Multi_HealDamage_Implementation(const float HealAmount, const AActor* Instigator)
+{
+	OnHealedEvent.Broadcast(HealAmount, Instigator);
+}
