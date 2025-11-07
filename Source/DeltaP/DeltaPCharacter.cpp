@@ -24,6 +24,7 @@ ADeltaPCharacter::ADeltaPCharacter()
 
 	SprintingComponent = CreateDefaultSubobject<USprintingComponent>(TEXT("SprintingComponent"));
 	CrouchingComponent = CreateDefaultSubobject<UCrouchingComponent>(TEXT("CrouchingComponent"));
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));

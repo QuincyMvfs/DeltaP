@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActorComponents/HealthComponent.h"
 #include "Enums/EMovementStates.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
@@ -34,6 +35,9 @@ class ADeltaPCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor Components|Movement", meta = (AllowPrivateAccess = "true"))
 	UCrouchingComponent* CrouchingComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor Components|Health", meta = (AllowPrivateAccess = "true"))
+	UHealthComponent* HealthComponent;
 
 
 public:
