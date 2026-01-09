@@ -58,7 +58,7 @@ Streamline::EStreamlineFeatureSupport TranslateStreamlineResult(sl::Result Resul
  
 void FStreamlineCoreModule::StartupModule()
 {
-	if (IsRunningCommandlet())
+	if (IsRunningCommandlet() || IsRunningCookCommandlet() || IsRunningDLCCookCommandlet())
 	{
 		return;
 	}
